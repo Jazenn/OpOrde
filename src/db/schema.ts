@@ -34,8 +34,8 @@ export const households = pgTable('households', {
 });
 
 export const householdMembers = pgTable('household_members', {
-  householdId: uuid('household_id').references(() => households.id),
-  userId: text('user_id').references(() => profiles.id),
+  householdId: uuid('household_id').references(() => households.id).notNull(),
+  userId: text('user_id').references(() => profiles.id).notNull(),
   role: text('role').default('member').notNull(), // 'owner' | 'member'
   joinedAt: timestamp('joined_at').defaultNow().notNull(),
 }, (t) => ({
@@ -49,8 +49,10 @@ export const userTasks = pgTable('user_tasks', {
   templateId: uuid('template_id').references(() => taskTemplates.id),
   isCustom: boolean('is_custom').default(false).notNull(),
   customName: text('custom_name'),
+  customIcon: text('custom_icon'),
   frequencyType: text('frequency_type').notNull(),
   intervalDays: integer('interval_days').default(7),
+  notes: text('notes'),
   nextDueDate: date('next_due_date').notNull(),
   streakCount: integer('streak_count').default(0).notNull(),
   isActive: boolean('is_active').default(true).notNull(),
@@ -65,7 +67,7 @@ export const taskCompletions = pgTable('task_completions', {
 });
 
 export const pushTokens = pgTable('push_tokens', {
-  userId: text('user_id').references(() => profiles.id),
+  userId: text('user_id').references(() => profiles.id).notNull(),
   platform: text('platform').notNull(), // 'ios' | 'android'
   token: text('token').notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
